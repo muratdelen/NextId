@@ -1,16 +1,16 @@
-name: Build and Publish NextId Core
+name: Build and Publish NextId
 
 on:
   push:
     branches:
       - main
-      - nextid/main
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: muratdelen/nextid-core
+  IMAGE_NAME: muratdelen/nextid
   NEXTID_BASE_VERSION: 26.6.3
+  NEXTID_CORE_IMAGE: ghcr.io/muratdelen/nextid-core
 
 jobs:
   build-and-push:
@@ -34,11 +34,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push NextId Core image
+      - name: Build and push NextId image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
+          build-args: |
+            NEXTID_BASE_VERSION=${{ env.NEXTID_BASE_VERSION }}
+            NEXTID_CORE_IMAGE=${{ env.NEXTID_CORE_IMAGE }}
           tags: |
             ghcr.io/${{ env.IMAGE_NAME }}:${{ env.NEXTID_BASE_VERSION }}
             ghcr.io/${{ env.IMAGE_NAME }}:latest

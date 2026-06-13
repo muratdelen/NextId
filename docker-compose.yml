@@ -1,5 +1,3 @@
-
-
 services:
   nextid-db:
     image: postgres:16
@@ -13,8 +11,7 @@ services:
     restart: unless-stopped
 
   nextid-core:
-    #image: quay.io/keycloak/keycloak:${NEXTID_BASE_VERSION:-26.6.3}
-    image: ghcr.io/muratdelen/nextid:${NEXTID_CORE_IMAGE_TAG:-latest}
+    image: ghcr.io/muratdelen/nextid-core:${NEXTID_CORE_IMAGE_TAG:-latest}
     container_name: ${COMPOSE_PROJECT_NAME:-nextid}-core
     depends_on:
       - nextid-db
@@ -24,6 +21,7 @@ services:
       KC_DB_USERNAME: ${NEXTID_DB_USER}
       KC_DB_PASSWORD: ${NEXTID_DB_PASSWORD}
       KC_HOSTNAME: ${NEXTID_HOSTNAME:-http://localhost:8080}
+      KC_HOSTNAME_STRICT: ${NEXTID_HOSTNAME_STRICT:-false}
       KC_HTTP_ENABLED: ${NEXTID_HTTP_ENABLED:-true}
       KC_PROXY_HEADERS: ${NEXTID_PROXY_HEADERS:-xforwarded}
       KC_BOOTSTRAP_ADMIN_USERNAME: ${NEXTID_ADMIN_USERNAME}
@@ -37,5 +35,6 @@ services:
       - start
       - --optimized
     restart: unless-stopped
+
 volumes:
   nextid_db_data:
